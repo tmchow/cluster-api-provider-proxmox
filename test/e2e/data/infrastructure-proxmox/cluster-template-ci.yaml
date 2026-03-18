@@ -1,5 +1,5 @@
 ---
-apiVersion: cluster.x-k8s.io/v1beta1
+apiVersion: cluster.x-k8s.io/v1beta2
 kind: Cluster
 metadata:
   name: "${CLUSTER_NAME}"
@@ -15,7 +15,7 @@ spec:
     name: "${CLUSTER_NAME}"
   controlPlaneRef:
     kind: KubeadmControlPlane
-    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta2
     name: "${CLUSTER_NAME}-control-plane"
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
@@ -34,7 +34,7 @@ spec:
   allowedNodes: ${ALLOWED_NODES:=[]}
 ---
 kind: KubeadmControlPlane
-apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
 metadata:
   name: "${CLUSTER_NAME}-control-plane"
 spec:
@@ -188,7 +188,7 @@ spec:
             bridge: ${BRIDGE}
             model: virtio
 ---
-apiVersion: cluster.x-k8s.io/v1beta1
+apiVersion: cluster.x-k8s.io/v1beta2
 kind: MachineDeployment
 metadata:
   name: "${CLUSTER_NAME}-workers"
@@ -207,7 +207,7 @@ spec:
       bootstrap:
         configRef:
           name: "${CLUSTER_NAME}-worker"
-          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta2
           kind: KubeadmConfigTemplate
       infrastructureRef:
         name: "${CLUSTER_NAME}-worker"
@@ -238,7 +238,7 @@ spec:
             bridge: ${BRIDGE}
             model: virtio
 ---
-apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta2
 kind: KubeadmConfigTemplate
 metadata:
   name: "${CLUSTER_NAME}-worker"
@@ -259,7 +259,7 @@ metadata:
   name: "${CLUSTER_NAME}-crs-cni"
 data: ${CNI_RESOURCES}
 ---
-apiVersion: addons.cluster.x-k8s.io/v1beta1
+apiVersion: addons.cluster.x-k8s.io/v1beta2
 kind: ClusterResourceSet
 metadata:
   name: "${CLUSTER_NAME}-crs-cni"
