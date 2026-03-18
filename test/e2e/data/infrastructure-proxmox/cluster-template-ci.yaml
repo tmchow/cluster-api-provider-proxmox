@@ -183,9 +183,10 @@ spec:
           disk: ${BOOT_VOLUME_DEVICE}
           sizeGb: ${BOOT_VOLUME_SIZE:=100}
       network:
-        default:
-          bridge: ${BRIDGE}
-          model: virtio
+        networkDevices:
+          - name: net0
+            bridge: ${BRIDGE}
+            model: virtio
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
@@ -232,9 +233,10 @@ spec:
           disk: ${BOOT_VOLUME_DEVICE}
           sizeGb: ${BOOT_VOLUME_SIZE:=100}
       network:
-        default:
-          bridge: ${BRIDGE}
-          model: virtio
+        networkDevices:
+          - name: net0
+            bridge: ${BRIDGE}
+            model: virtio
 ---
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate

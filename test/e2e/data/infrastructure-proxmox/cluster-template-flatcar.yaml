@@ -254,9 +254,10 @@ spec:
           disk: ${BOOT_VOLUME_DEVICE}
           sizeGb: ${BOOT_VOLUME_SIZE:=100}
       network:
-        default:
-          bridge: ${BRIDGE}
-          model: virtio
+        networkDevices:
+          - name: net0
+            bridge: ${BRIDGE}
+            model: virtio
       checks:
         skipQemuGuestAgent: false
         skipCloudInitStatus: true
@@ -306,9 +307,10 @@ spec:
           disk: ${BOOT_VOLUME_DEVICE}
           sizeGb: ${BOOT_VOLUME_SIZE:=100}
       network:
-        default:
-          bridge: ${BRIDGE}
-          model: virtio
+        networkDevices:
+          - name: net0
+            bridge: ${BRIDGE}
+            model: virtio
       checks:
         skipQemuGuestAgent: false
         skipCloudInitStatus: true
