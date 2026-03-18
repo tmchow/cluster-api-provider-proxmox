@@ -10,12 +10,12 @@ spec:
     pods:
       cidrBlocks: ["192.168.0.0/16"]
   infrastructureRef:
-    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
+    apiGroup: infrastructure.cluster.x-k8s.io
     kind: ProxmoxCluster
     name: "${CLUSTER_NAME}"
   controlPlaneRef:
     kind: KubeadmControlPlane
-    apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+    apiGroup: controlplane.cluster.x-k8s.io
     name: "${CLUSTER_NAME}-control-plane"
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
@@ -40,10 +40,11 @@ metadata:
 spec:
   replicas: ${CONTROL_PLANE_MACHINE_COUNT}
   machineTemplate:
-    infrastructureRef:
-      kind: ProxmoxMachineTemplate
-      apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
-      name: "${CLUSTER_NAME}-control-plane"
+    spec:
+      infrastructureRef:
+        kind: ProxmoxMachineTemplate
+        apiGroup: infrastructure.cluster.x-k8s.io
+        name: "${CLUSTER_NAME}-control-plane"
   kubeadmConfigSpec:
     users:
       - name: root
@@ -157,11 +158,13 @@ spec:
     initConfiguration:
       nodeRegistration:
         kubeletExtraArgs:
-          provider-id: "proxmox://'{{ ds.meta_data.instance_id }}'"
+          - name: provider-id
+            value: "proxmox://'{{ ds.meta_data.instance_id }}'"
     joinConfiguration:
       nodeRegistration:
         kubeletExtraArgs:
-          provider-id: "proxmox://'{{ ds.meta_data.instance_id }}'"
+          - name: provider-id
+            value: "proxmox://'{{ ds.meta_data.instance_id }}'"
   version: "${KUBERNETES_VERSION}"
 ---
 kind: ProxmoxMachineTemplate
@@ -184,9 +187,9 @@ spec:
           sizeGb: ${BOOT_VOLUME_SIZE:=100}
       network:
         networkDevices:
-          - name: net0
-            bridge: ${BRIDGE}
-            model: virtio
+        - name: net0
+          bridge: ${BRIDGE}
+          model: virtio
 ---
 apiVersion: cluster.x-k8s.io/v1beta2
 kind: MachineDeployment
@@ -207,11 +210,11 @@ spec:
       bootstrap:
         configRef:
           name: "${CLUSTER_NAME}-worker"
-          apiVersion: bootstrap.cluster.x-k8s.io/v1beta2
+          apiGroup: bootstrap.cluster.x-k8s.io
           kind: KubeadmConfigTemplate
       infrastructureRef:
         name: "${CLUSTER_NAME}-worker"
-        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
+        apiGroup: infrastructure.cluster.x-k8s.io
         kind: ProxmoxMachineTemplate
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
@@ -234,9 +237,9 @@ spec:
           sizeGb: ${BOOT_VOLUME_SIZE:=100}
       network:
         networkDevices:
-          - name: net0
-            bridge: ${BRIDGE}
-            model: virtio
+        - name: net0
+          bridge: ${BRIDGE}
+          model: virtio
 ---
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta2
 kind: KubeadmConfigTemplate
@@ -251,7 +254,8 @@ spec:
       joinConfiguration:
         nodeRegistration:
           kubeletExtraArgs:
-            provider-id: "proxmox://'{{ ds.meta_data.instance_id }}'"
+            - name: provider-id
+              value: "proxmox://'{{ ds.meta_data.instance_id }}'"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -292,9 +296,9 @@ spec:
           sizeGb: ${BOOT_VOLUME_SIZE:=100}
       network:
         networkDevices:
-          - name: net0
-            bridge: ${BRIDGE}
-            model: virtio
+        - name: net0
+          bridge: ${BRIDGE}
+          model: virtio
 ---
 kind: ProxmoxMachineTemplate
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
@@ -316,6 +320,6 @@ spec:
           sizeGb: ${BOOT_VOLUME_SIZE:=100}
       network:
         networkDevices:
-          - name: net0
-            bridge: ${BRIDGE}
-            model: virtio
+        - name: net0
+          bridge: ${BRIDGE}
+          model: virtio
